@@ -17,26 +17,19 @@ import Grid from '@mui/material/Grid2';
 import problems from '../assets/problems.json';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { DebounceInput } from 'react-debounce-input';
 
 interface Problem {
     title: string;
     number: string;
-    titleId: string;
-    paid: boolean;
+    id: number;
     difficulty: string;
     likes: number;
     dislikes: number;
     Accepted: string;
     Submission: string;
-    AcceptedRaw: number;
-    SubmissionRaw: number;
     AcceptanceRate: number;
     topicTags: { name: string; id: string; slug: string }[];
-    hasSolution: boolean;
-    hasVideoSolution: boolean;
 }
 
 declare module '@tanstack/react-table' {
@@ -58,6 +51,7 @@ const difficultyOrder: { [key: string]: number } = {
 };
 
 const columnHelper = createColumnHelper<Problem>();
+
 
 function parseProblems(problems: any[]): Problem[] {
     return problems.map((problem) => ({

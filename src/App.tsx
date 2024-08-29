@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './App.css';
 import LeetcodeTable from './pages/LeetcodeTable.tsx';
 import React from 'react';
