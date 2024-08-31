@@ -666,7 +666,7 @@ export default function LeetcodeTable() {
                 multiple
                 id="tags-outlined"
                 options={tagsDict.filter(tag => !(columnFilterValue as string[] || []).includes(tag))}
-                value={columnFilterValue as TValue[] || []}
+                value={(columnFilterValue as unknown as string[]) || []}
                 onChange={(_, value) => {
                     column.setFilterValue(value); // Set the selected tag names for filtering
                 }}
