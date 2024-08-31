@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
 import {
     Column,
@@ -666,14 +665,13 @@ export default function LeetcodeTable() {
                 multiple
                 id="tags-outlined"
                 options={tagsDict}
-                value={columnFilterValue || []}
-                onChange={(event, value) => {
+                value={columnFilterValue as TValue[] || []}
+                onChange={(_, value) => {
                     column.setFilterValue(value); // Set the selected tag names for filtering
                 }}
                 renderTags={(value: string[], getTagProps) =>
                     value.map((option, index) => (
                         <Chip
-                            key={option}
                             label={option}
                             {...getTagProps({ index })}
                             sx={{ color: 'white', backgroundColor: '#1976d2' }}
