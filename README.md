@@ -1,48 +1,44 @@
-
 # Leetcode Problems Filtered and Sorted
-List of leetcode questions which can be filtered by multiple tags (array, binary search) at a time and other metrics including  total submissions count, accepted submissions count. The json file storing the parsed problem information is located at './src/assets/problems.json'. Feel free to use it. It will be updated frequently. 
+Web application that allows you to filter and sort LeetCode problems by multiple tags (e.g., Array, Binary Search) and other metrics, including likes dislike ratio, submissions count and accepted submissions count.
 
-For fetching the problems, I used graphql queries for leetcode inspired from https://github.com/akarsh1995/leetcode-graphql-queries/. 
+The JSON file storing the parsed problem information is located at `./src/assets/problems.json`. This file is regularly updated and available for your use.
 
-For any suggestions, please create an issue. 
+For any suggestions, please feel free to create an issue.
 
-## Features to be added:
-- Show user profile and metrics by using the user provided leetcode username
+## Features
+
+- Filter LeetCode problems by multiple tags simultaneously.
+- Sort problems by various metrics like likes, dislikes, total submissions and accepted submissions.
+- Problem list fetched using GraphQL and updated daily.
+
+## Upcoming Features
+
+- Display user profiles and metrics by using the provided LeetCode username.
 
 
 ## Live URL
 
-https://www.leetcodepatterns.vercel.app
+Check out the live version here: [Leetcode Patterns](https://www.leetcodepatterns.vercel.app)
 
-
-  
 ## Screenshot
 
-![App Screenshot](https://adityarajput.com/leetcode/leet.png)
+![Website Screenshot](./src/assets/Screenshot.png)
 
-    
+
+
 ## Acknowledgements
- 
- - [Leetcode](https://leetcode.com)
 
-## Technologies used
+- [LeetCode](https://leetcode.com) 
+- [akarsh1995/leetcode-graphql-queries](https://github.com/akarsh1995/leetcode-graphql-queries/) for inspiring the GraphQL queries.
+- [adixmr/leetcode](https://github.com/adixmr/leetcode/tree/main) for project idea inspiration.
 
-- Nodejs
+## Technologies Used
 
-- Cron Jobs
+- **Node.js**: Backend runtime environment.
+- **GraphQL**: Query language for fetching LeetCode problems.
+- **React**: Frontend library for building the user interface.
+- **MUI**: UI library for React.
 
-- GraphQl
-
-- React
-
-- MUI
-
-
-
-  
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
-
-
-  
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
