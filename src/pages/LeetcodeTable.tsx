@@ -12,12 +12,92 @@ import {
     ColumnDef,
     ColumnFiltersState,
 } from '@tanstack/react-table';
-import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField } from '@mui/material';
+import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField, Autocomplete,Chip} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import problems from '../assets/problems.json';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { DebounceInput } from 'react-debounce-input';
+
+const filterTags = (row: any, columnId: string, filterValue: string[]) => {
+    const rowTags = row.getValue(columnId).split(', ');
+    return filterValue.every(tag => rowTags.includes(tag));
+};
+
+const tagsDict = [
+    'Array',
+    'Backtracking',
+    'Biconnected Component',
+    'Binary Indexed Tree',
+    'Binary Search',
+    'Binary Search Tree',
+    'Binary Tree',
+    'Bit Manipulation',
+    'Bitmask',
+    'Brainteaser',
+    'Breadth-First Search',
+    'Bucket Sort',
+    'Combinatorics',
+    'Concurrency',
+    'Counting',
+    'Counting Sort',
+    'Data Stream',
+    'Database',
+    'Depth-First Search',
+    'Design',
+    'Divide and Conquer',
+    'Doubly-Linked List',
+    'Dynamic Programming',
+    'Enumeration',
+    'Eulerian Circuit',
+    'Game Theory',
+    'Geometry',
+    'Graph',
+    'Greedy',
+    'Hash Function',
+    'Hash Table',
+    'Heap (Priority Queue)',
+    'Interactive',
+    'Iterator',
+    'Line Sweep',
+    'Linked List',
+    'Math',
+    'Matrix',
+    'Memoization',
+    'Merge Sort',
+    'Minimum Spanning Tree',
+    'Monotonic Queue',
+    'Monotonic Stack',
+    'Number Theory',
+    'Ordered Set',
+    'Prefix Sum',
+    'Probability and Statistics',
+    'Queue',
+    'Quickselect',
+    'Radix Sort',
+    'Randomized',
+    'Recursion',
+    'Rejection Sampling',
+    'Reservoir Sampling',
+    'Rolling Hash',
+    'Segment Tree',
+    'Shell',
+    'Shortest Path',
+    'Simulation',
+    'Sliding Window',
+    'Sorting',
+    'Stack',
+    'String',
+    'String Matching',
+    'Strongly Connected Component',
+    'Suffix Array',
+    'Topological Sort',
+    'Tree',
+    'Trie',
+    'Two Pointers',
+    'Union Find'
+  ]
+
 
 interface Problem {
     title: string;
@@ -26,15 +106,16 @@ interface Problem {
     difficulty: string;
     likes: number;
     dislikes: number;
+    likesRatio: number;
     Accepted: string;
     Submission: string;
     AcceptanceRate: number;
-    topicTags: { name: string; id: string; slug: string }[];
+    topicTags: string;
 }
 
 declare module '@tanstack/react-table' {
     interface ColumnMeta<TData extends Problem, TValue> {
-        filterVariant?: 'text' | 'range' | 'select';
+        filterVariant?: 'text' | 'range' | 'select' | 'tags';
     }
 }
 
@@ -61,6 +142,7 @@ function parseProblems(problems: any[]): Problem[] {
         difficulty: problem.difficulty,
         likes: problem.likes,
         dislikes: problem.dislikes,
+        likesRatio: problem.likes / (problem.likes + problem.dislikes),
         Accepted: problem.AcceptedRaw,
         Submission: problem.SubmissionRaw,
         AcceptanceRate: problem.AcceptanceRate,
@@ -85,7 +167,7 @@ export default function LeetcodeTable() {
                 </div>
             ),
             cell: (info) => <span>{parseInt(info.getValue(), 10)}</span>,
-            size: 70,
+            size: 80,
         }),
         columnHelper.accessor('title', {
             header: () => (
@@ -93,7 +175,7 @@ export default function LeetcodeTable() {
                     Title
                 </div>
             ),
-            size: 300,
+            size: 500,
             cell: (info) => {
                 const title = info.getValue().split(',')[1];
                 const link = info.getValue().split(',')[0];
@@ -112,7 +194,6 @@ export default function LeetcodeTable() {
             ),
             cell: (info) => {
                 const difficulty = info.getValue();
-                console.log(difficultyColors[difficulty]);
                 return (
                     <span style={{ color: difficultyColors[difficulty] }}>
                         {info.getValue()}
@@ -142,6 +223,20 @@ export default function LeetcodeTable() {
                     <ThumbDownIcon style={{ color: '#FF0000', fontSize: '1.5rem' }} />
                     Dislikes
                 </div>
+            ),
+            size: 80,
+        }),
+        columnHelper.accessor('likesRatio', {
+            enableColumnFilter: false,
+            header: () => (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', height: '100%' }}>
+                    Like Ratio
+                </div>
+            ),
+            cell: (info) => (
+                <span>
+                    {(Math.round(info.getValue() * 100) / 100).toFixed(2)}
+                </span>
             ),
             size: 80,
         }),
@@ -184,10 +279,13 @@ export default function LeetcodeTable() {
                 </div>
             ),
             cell: (info) => {
-                console.log(info.getValue());
                 return info.getValue();
             },
             size: 300,
+            filterFn: filterTags,
+            meta: {
+                filterVariant: 'tags'
+            },
         }),
     ];
 
@@ -206,7 +304,9 @@ export default function LeetcodeTable() {
             maxSize: 200,
         },
         columnResizeMode: 'onChange',
-        filterFns: {},
+        filterFns: {
+            filterTags
+        },
         state: {
             pagination,
             columnFilters,
@@ -268,7 +368,7 @@ export default function LeetcodeTable() {
                             paddingTop: '20px'
                         }}>
                             <table>
-                                <thead style={{ paddingBottom: '10px' }}>
+                                <thead style={{ paddingBottom: '10px',verticalAlign:'top' }}>
                                     {table.getHeaderGroups().map(headerGroup => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map(header => (
@@ -295,7 +395,8 @@ export default function LeetcodeTable() {
                                                                         alignItems: 'center',
                                                                         justifyContent: 'center',
                                                                         position: 'relative',
-                                                                        gap: '0.5rem'
+                                                                        gap: '0.5rem',
+                                                                        cursor:'pointer'
                                                                     }
                                                                 }}
                                                             >
@@ -473,9 +574,8 @@ export default function LeetcodeTable() {
                     }
                     placeholder={`Min`}
                     variant="outlined"
-                    size="small"
                     sx={{
-                        width: '100px',
+                        "& .MuiInputBase-input": { fontSize: 16, height: 4, padding: 1, width: '100%', color: 'white' },
                         '& .MuiOutlinedInput-root': {
                             color: 'white',
                             '& fieldset': {
@@ -487,9 +587,6 @@ export default function LeetcodeTable() {
                             '&.Mui-focused fieldset': {
                                 borderColor: '#1976d2',
                             },
-                        },
-                        '& .MuiInputBase-input': {
-                            color: 'white',
                         },
                     }}
                 />
@@ -503,8 +600,8 @@ export default function LeetcodeTable() {
                     }
                     placeholder={`Max`}
                     variant="outlined"
-                    size="small"
                     sx={{
+                        "& .MuiInputBase-input": { fontSize: 16 },
                         width: '100px',
                         '& .MuiOutlinedInput-root': {
                             color: 'white',
@@ -518,9 +615,6 @@ export default function LeetcodeTable() {
                                 borderColor: '#1976d2',
                             },
                         },
-                        '& .MuiInputBase-input': {
-                            color: 'white',
-                        },
                     }}
                 />
             </div>
@@ -529,9 +623,9 @@ export default function LeetcodeTable() {
                 value={columnFilterValue?.toString() || ""}
                 onChange={(e) => column.setFilterValue(e.target.value)}
                 variant="outlined"
-                size="small"
                 displayEmpty
                 sx={{
+                    "& .MuiInputBase-input": { fontSize: 16 },
                     color: 'white',
                     '& .MuiSelect-outlined': {
                         color: 'white',
@@ -566,35 +660,112 @@ export default function LeetcodeTable() {
                 <MenuItem value="Medium">Medium</MenuItem>
                 <MenuItem value="Hard">Hard</MenuItem>
             </Select>
-        ) : (
-            <DebounceInput
-                element={TextField}
-                debounceTimeout={300}
-                type="text"
-                value={(columnFilterValue ?? '') as string}
-                onChange={(e) => column.setFilterValue(e.target.value)}
-                placeholder={`Search...`}
-                variant="outlined"
-                size="small"
+        ) :
+            filterVariant === 'tags' ? (
+                <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={tagsDict}
+                value={columnFilterValue || []}
+                onChange={(event, value) => {
+                    column.setFilterValue(value); // Set the selected tag names for filtering
+                }}
+                renderTags={(value: string[], getTagProps) =>
+                    value.map((option, index) => (
+                        <Chip
+                            key={option}
+                            label={option}
+                            {...getTagProps({ index })}
+                            sx={{ color: 'white', backgroundColor: '#1976d2' }}
+                        />
+                    ))
+                }
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        id="tags-autocomplete"
+                        name="tags"
+                        variant="outlined"
+                        label="Tags"
+                        placeholder="Select Tags"
+                        sx={{
+                            "& .MuiInputBase-input": { fontSize: 16, padding: 1, color: 'white' },
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: 'white',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: 'gray',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#1976d2',
+                            },
+                            '& .MuiChip-root': {
+                                color: 'white',
+                                backgroundColor: '#1976d2',
+                            },
+                        }}
+                    />
+                )}
                 sx={{
-                    width: '150px',
-                    '& .MuiOutlinedInput-root': {
+                    color: 'white',
+                    '& .MuiAutocomplete-tag': {
                         color: 'white',
-                        '& fieldset': {
-                            borderColor: 'white',
-                        },
-                        '&:hover fieldset': {
-                            borderColor: 'gray',
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: '#1976d2',
-                        },
+                        backgroundColor: '#1976d2',
                     },
-                    '& .MuiInputBase-input': {
+                    '& .MuiInputBase-root': {
                         color: 'white',
+                    },
+                    '& .MuiSvgIcon-root': {
+                        color: 'white',
+                    },
+                    '& .MuiAutocomplete-popupIndicator': {
+                        color: 'white',
+                    },
+                    '& .MuiAutocomplete-clearIndicator': {
+                        color: 'white',
+                    },
+                    '& .MuiPaper-root': {
+                        backgroundColor: '#333333',
+                        color: 'white',
+                    },
+                    '& .MuiAutocomplete-option': {
+                        color: 'white',
+                        '&[aria-selected="true"]': {
+                            backgroundColor: '#1976d2',
+                        },
                     },
                 }}
             />
-        );
+
+
+            ) :
+                (
+                    <DebounceInput
+                        element={TextField}
+                        debounceTimeout={300}
+                        type="text"
+                        value={(columnFilterValue ?? '') as string}
+                        onChange={(e) => column.setFilterValue(e.target.value)}
+                        placeholder={`Search...`}
+                        size="medium"
+                        id="outlined-basic" variant="outlined"
+                        sx={{
+                            "& .MuiInputBase-input": { fontSize: 16, color:'white'},
+                            "&.MuiOutlinedInput-input": { fontSize: 16, color: 'white' },
+                            '& .MuiOutlinedInput-root': {
+                                color: 'white',
+                                '& fieldset': {
+                                    borderColor: 'white',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: 'gray',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#1976d2',
+                                },
+                            }
+                        }}
+                    />
+                );
     }
 }
