@@ -10,6 +10,7 @@ import {
     flexRender,
     ColumnDef,
     ColumnFiltersState,
+    RowData,
 } from '@tanstack/react-table';
 import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField, Autocomplete,Chip} from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -113,7 +114,7 @@ interface Problem {
 }
 
 declare module '@tanstack/react-table' {
-    interface ColumnMeta<TData extends Problem, TValue> {
+    interface ColumnMeta<TData extends RowData, TValue> {
         filterVariant?: 'text' | 'range' | 'select' | 'tags';
     }
 }
@@ -664,7 +665,7 @@ export default function LeetcodeTable() {
                 <Autocomplete
                 multiple
                 id="tags-outlined"
-                options={tagsDict}
+                options={tagsDict.filter(tag => !(columnFilterValue as string[] || []).includes(tag))}
                 value={columnFilterValue as TValue[] || []}
                 onChange={(_, value) => {
                     column.setFilterValue(value); // Set the selected tag names for filtering
