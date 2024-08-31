@@ -18,7 +18,7 @@ For any suggestions, please feel free to create an issue.
 
 ## Live URL
 
-Check out the live version here: [Leetcode Patterns](https://www.leetcodepatterns.vercel.app)
+Check out the live version here: [Leetcode Patterns](https://leetcodepatterns.vercel.app)
 
 ## Screenshot
 
