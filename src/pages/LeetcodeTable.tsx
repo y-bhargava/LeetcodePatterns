@@ -12,7 +12,7 @@ import {
     ColumnFiltersState,
     RowData,
 } from '@tanstack/react-table';
-import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField, Autocomplete, Chip } from '@mui/material';
+import { Box, CircularProgress, Select, MenuItem, Button, TextField, Autocomplete, Chip } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import problems from '../assets/problems.json';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
