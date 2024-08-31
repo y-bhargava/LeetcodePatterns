@@ -12,12 +12,13 @@ import {
     ColumnFiltersState,
     RowData,
 } from '@tanstack/react-table';
-import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField, Autocomplete,Chip} from '@mui/material';
+import { Box, CircularProgress, Typography, Select, MenuItem, Button, TextField, Autocomplete, Chip } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import problems from '../assets/problems.json';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { DebounceInput } from 'react-debounce-input';
+import logo from '../assets/logo.png';
 
 const filterTags = (row: any, columnId: string, filterValue: string[]) => {
     const rowTags = row.getValue(columnId).split(', ');
@@ -96,7 +97,7 @@ const tagsDict = [
     'Trie',
     'Two Pointers',
     'Union Find'
-  ]
+]
 
 
 interface Problem {
@@ -340,18 +341,9 @@ export default function LeetcodeTable() {
             ) : (
                 <Grid container spacing={0} style={{ backgroundColor: 'rgb(26 26 26/var(--tw-bg-opacity))' }}>
                     <Grid size={12}>
-                        <Typography
-                            variant="h3"
-                            style={{
-                                color: '#e8e8e8',
-                                textAlign: 'center',
-                                fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji',
-                                fontWeight: '600',
-                                padding: '20px',
-                            }}
-                        >
-                            Leetcode Problems
-                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+                            <img src={logo} alt="logo" style={{height: '200px' }} />
+                        </div>
                     </Grid>
                     <Grid
                         size={12}
@@ -368,7 +360,7 @@ export default function LeetcodeTable() {
                             paddingTop: '20px'
                         }}>
                             <table>
-                                <thead style={{ paddingBottom: '10px',verticalAlign:'top' }}>
+                                <thead style={{ paddingBottom: '10px', verticalAlign: 'top' }}>
                                     {table.getHeaderGroups().map(headerGroup => (
                                         <tr key={headerGroup.id}>
                                             {headerGroup.headers.map(header => (
@@ -396,7 +388,7 @@ export default function LeetcodeTable() {
                                                                         justifyContent: 'center',
                                                                         position: 'relative',
                                                                         gap: '0.5rem',
-                                                                        cursor:'pointer'
+                                                                        cursor: 'pointer'
                                                                     }
                                                                 }}
                                                             >
@@ -475,7 +467,6 @@ export default function LeetcodeTable() {
                             </table>
 
 
-                            {/* Pagination controls */}
                             <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '50px' }}>
                                 <Button
                                     sx={{ backgroundColor: '#333333', color: '#1976d2' }}
@@ -663,78 +654,78 @@ export default function LeetcodeTable() {
         ) :
             filterVariant === 'tags' ? (
                 <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={tagsDict.filter(tag => !(columnFilterValue as string[] || []).includes(tag))}
-                value={(columnFilterValue as unknown as string[]) || []}
-                onChange={(_, value) => {
-                    column.setFilterValue(value); // Set the selected tag names for filtering
-                }}
-                renderTags={(value: string[], getTagProps) =>
-                    value.map((option, index) => (
-                        <Chip
-                            label={option}
-                            {...getTagProps({ index })}
-                            sx={{ color: 'white', backgroundColor: '#1976d2' }}
+                    multiple
+                    id="tags-outlined"
+                    options={tagsDict.filter(tag => !(columnFilterValue as string[] || []).includes(tag))}
+                    value={(columnFilterValue as unknown as string[]) || []}
+                    onChange={(_, value) => {
+                        column.setFilterValue(value); 
+                    }}
+                    renderTags={(value: string[], getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip
+                                label={option}
+                                {...getTagProps({ index })}
+                                sx={{ color: 'white', backgroundColor: '#1976d2' }}
+                            />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            id="tags-autocomplete"
+                            name="tags"
+                            variant="outlined"
+                            label="Tags"
+                            placeholder="Select Tags"
+                            sx={{
+                                "& .MuiInputBase-input": { fontSize: 16, padding: 1, color: 'white' },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white',
+                                },
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'gray',
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#1976d2',
+                                },
+                                '& .MuiChip-root': {
+                                    color: 'white',
+                                    backgroundColor: '#1976d2',
+                                },
+                            }}
                         />
-                    ))
-                }
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        id="tags-autocomplete"
-                        name="tags"
-                        variant="outlined"
-                        label="Tags"
-                        placeholder="Select Tags"
-                        sx={{
-                            "& .MuiInputBase-input": { fontSize: 16, padding: 1, color: 'white' },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'white',
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'gray',
-                            },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                borderColor: '#1976d2',
-                            },
-                            '& .MuiChip-root': {
-                                color: 'white',
-                                backgroundColor: '#1976d2',
-                            },
-                        }}
-                    />
-                )}
-                sx={{
-                    color: 'white',
-                    '& .MuiAutocomplete-tag': {
+                    )}
+                    sx={{
                         color: 'white',
-                        backgroundColor: '#1976d2',
-                    },
-                    '& .MuiInputBase-root': {
-                        color: 'white',
-                    },
-                    '& .MuiSvgIcon-root': {
-                        color: 'white',
-                    },
-                    '& .MuiAutocomplete-popupIndicator': {
-                        color: 'white',
-                    },
-                    '& .MuiAutocomplete-clearIndicator': {
-                        color: 'white',
-                    },
-                    '& .MuiPaper-root': {
-                        backgroundColor: '#333333',
-                        color: 'white',
-                    },
-                    '& .MuiAutocomplete-option': {
-                        color: 'white',
-                        '&[aria-selected="true"]': {
+                        '& .MuiAutocomplete-tag': {
+                            color: 'white',
                             backgroundColor: '#1976d2',
                         },
-                    },
-                }}
-            />
+                        '& .MuiInputBase-root': {
+                            color: 'white',
+                        },
+                        '& .MuiSvgIcon-root': {
+                            color: 'white',
+                        },
+                        '& .MuiAutocomplete-popupIndicator': {
+                            color: 'white',
+                        },
+                        '& .MuiAutocomplete-clearIndicator': {
+                            color: 'white',
+                        },
+                        '& .MuiPaper-root': {
+                            backgroundColor: '#333333',
+                            color: 'white',
+                        },
+                        '& .MuiAutocomplete-option': {
+                            color: 'white',
+                            '&[aria-selected="true"]': {
+                                backgroundColor: '#1976d2',
+                            },
+                        },
+                    }}
+                />
 
 
             ) :
@@ -749,7 +740,7 @@ export default function LeetcodeTable() {
                         size="medium"
                         id="outlined-basic" variant="outlined"
                         sx={{
-                            "& .MuiInputBase-input": { fontSize: 16, color:'white'},
+                            "& .MuiInputBase-input": { fontSize: 16, color: 'white' },
                             "&.MuiOutlinedInput-input": { fontSize: 16, color: 'white' },
                             '& .MuiOutlinedInput-root': {
                                 color: 'white',
